@@ -1,15 +1,28 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from './supabaseClient';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import Workshop from './pages/Workshop';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import AITools from './pages/AITools';
-import LearnAI from './pages/LearnAI';
+
+// Lazy-loaded routes for code splitting
+const Workshop = lazy(() => import('./pages/Workshop'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AITools = lazy(() => import('./pages/AITools'));
+const LearnAI = lazy(() => import('./pages/LearnAI'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-darkBg flex items-center justify-center">
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ repeat: Infinity, duration: 2 }}
+      className="w-12 h-12 border-4 border-neonBlue border-t-neonPurple rounded-full"
+    />
+  </div>
+);
 
 function App() {
   const [session, setSession] = useState(null);
@@ -89,15 +102,17 @@ function App() {
       <div className="min-h-screen flex flex-col">
         <Navbar session={session} />
         <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/workshop" element={<Workshop />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard session={session} />} />
-            <Route path="/ai-tools" element={<AITools session={session} />} />
-            <Route path="/learn" element={<LearnAI />} />
-          </Routes>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/workshop" element={<Workshop />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={<Dashboard session={session} />} />
+              <Route path="/ai-tools" element={<AITools session={session} />} />
+              <Route path="/learn" element={<LearnAI />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </Router>
