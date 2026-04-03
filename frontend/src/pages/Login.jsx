@@ -35,7 +35,7 @@ export default function Login() {
             <LogIn className="w-8 h-8 text-neonBlue" />
           </div>
           <h1 className="text-3xl font-bold">Welcome Back 👋</h1>
-          <p className="text-gray-400 mt-2">Login to your Nxs.world account</p>
+          <p className="text-gray-400 mt-2">Login to your Nxsnitin.world account</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">

@@ -14,9 +14,13 @@ export default function Dashboard({ session }) {
       .from('users')
       .select('isPaid')
       .eq('id', session.user.id)
-      .single()
+      .maybeSingle()
       .then(({ data, error }) => {
-        if (error) console.error("Profile Fetch Error:", error.message);
+        if (error) {
+          console.error("Profile Fetch Error:", error.message);
+          setLoading(false);
+          return;
+        }
         if (data?.isPaid) setIsPaid(true);
         setLoading(false);
       });
